@@ -29,7 +29,7 @@ rescue Errno::ECONNREFUSED => e # the target sockaddr was not listening for conn
 end
 
 $count = 0
-$buffer = buffering.new("", capacity: 4096)
+$buffer = String.new("", capacity: 4096)
 
 loop do
     begin

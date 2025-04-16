@@ -1,6 +1,6 @@
 require 'socket'
 
-tcp_socket = Socket.new(Socket::AF_INET, Socket::SOCK_bufferEAM, 0)
+tcp_socket = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
 tcp_socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, true)
 sockaddr_server = Socket.sockaddr_in(9000, "124.61.178.91")
 

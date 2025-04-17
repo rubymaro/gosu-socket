@@ -1,5 +1,7 @@
 require "socket"
 
+require_relative "./GameWindow.rb"
+
 def connect_server(tcp_server_ipv4, tcp_server_port)
     ret_select_or_nil = nil
     sockaddr_server = Socket.sockaddr_in(tcp_server_port, tcp_server_ipv4)
@@ -14,12 +16,7 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
     #rescue Errno::EADDRINUSE => e # the socket"s local address is already in use
     #rescue Errno::EINTR => e # the socket was cancelled
     rescue IO::WaitWritable => e
-        ret_select_or_nil = IO.select(nil, [tcp_server_socket], nil, 0)
-        begin
-            tcp_server_socket.connect_nonblock(sockaddr_server) # check connection failure
-        rescue Errno::EISCONN
-            puts("success2")
-        end
+        ret_select_or_nil = IO.select(nil, [tcp_server_socket], nil, 5)
     rescue Errno::EALREADY => e # see Errno::EINVAL
         puts("connecting ...")
     #rescue Errno::EADDRNOTAVAIL => e # the remote address is not a valid address, such as ADDR_ANY TODO check ADDRANY TO INADDR_ANY
@@ -72,4 +69,5 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
     return true
 end
 
-connect_server("124.61.178.91", 9000)
+$game_window = GameWindow.new()
+$game_window.show

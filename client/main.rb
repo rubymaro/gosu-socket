@@ -43,11 +43,11 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
     
     loop do
         begin
-            tcp_server_socket.write_nonblock("안녕 client #{$count}")
-            #tcp_server_socket.write_nonblock("안녕 client #{$count}".encode("utf-8"))
-            #tcp_server_socket.write_nonblock("안녕 client #{$count}".encode("utf-16"))
+            str = "안녕 client #{$count}"
+            packedData = [str.length, $count, str].pack("SSp")
+            tcp_server_socket.write_nonblock(packedData)
         rescue IO::WaitReadable => e # the socket is marked as nonblocking and the connection cannot be completed immediately
-            puts("WaitReadable")
+            puts("WaitReadable (write_nonblock)")
         rescue Errno::ECONNRESET => e
             puts(e.inspect)
             break
@@ -57,10 +57,10 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
             tcp_server_socket.read_nonblock(4096, $buffer)
             puts($buffer)
         rescue IO::WaitReadable => e # the socket is marked as nonblocking and the connection cannot be completed immediately
-            puts("WaitReadable")
+            puts("WaitReadable (read_nonblock)")
         end
     
-        sleep(1)
+        #sleep(1)
         $count += 1
     end
     

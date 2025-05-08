@@ -48,10 +48,9 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
             packet = header.pack("S2")
             packet << message
             tcp_server_socket.write_nonblock(packet)
-        rescue IO::WaitReadable => e # the socket is marked as nonblocking and the connection cannot be completed immediately
-            #puts("WaitReadable (#write_nonblock)")
         rescue IO::WaitWritable => e # the socket is marked as nonblocking and the connection cannot be completed immediately
-            #puts("WaitWritable (#write_nonblock)")
+            IO.select(nil, [tcp_server_socket])
+            retry
         rescue Errno::ECONNRESET => e
             puts(e.inspect)
             break
@@ -67,7 +66,7 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
         '''
     
         #sleep(1)
-        $count = ($count + 1) % 65535
+        $count = ($count + 1) % 65536
     end
     
     tcp_server_socket.close

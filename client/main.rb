@@ -44,9 +44,10 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
     loop do
         begin
             str = "hello client #{$count}"
-            data = [str.length, $count, str]
-            packedData = data.pack("SSp")
+            data = [str.length, $count]
+            packedData = data.pack("SS") + str
             tcp_server_socket.write_nonblock(packedData)
+            print("str length: #{str.length}, packedData length: #{packedData.length}\n")
         rescue IO::WaitReadable => e # the socket is marked as nonblocking and the connection cannot be completed immediately
             puts("WaitReadable (write_nonblock)")
         rescue Errno::ECONNRESET => e

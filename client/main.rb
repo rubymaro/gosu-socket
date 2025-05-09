@@ -42,11 +42,11 @@ def connect_server(tcp_server_ipv4, tcp_server_port)
     $buffer = String.new("", capacity: 4096)
     
     loop do
+        message = "hello client #{$count}"
+        header = [message.bytesize, $count]
+        packet = header.pack("S2")
+        packet << message
         begin
-            message = "hello client #{$count}"
-            header = [message.bytesize, $count]
-            packet = header.pack("S2")
-            packet << message
             tcp_server_socket.write_nonblock(packet)
         rescue IO::WaitWritable => e # the socket is marked as nonblocking and the connection cannot be completed immediately
             IO.select(nil, [tcp_server_socket])
